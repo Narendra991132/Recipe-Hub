@@ -9,16 +9,15 @@ def create_user_profile(sender, instance, created, **kwargs):
     Create a Profile whenever a new User is created
     """
     if created:
-        Profile.objects.create(user=instance)
+        # Check if profile already exists to avoid duplicate errors
+        if not hasattr(instance, 'profile'):
+            Profile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     """
     Save the profile whenever the user is saved
     """
-    # Check if profile exists to avoid error
-    try:
+    # Check if profile exists before saving to avoid errors
+    if hasattr(instance, 'profile'):
         instance.profile.save()
-    except User.profile.RelatedObjectDoesNotExist:
-        # Create profile if it doesn't exist
-        Profile.objects.create(user=instance)
