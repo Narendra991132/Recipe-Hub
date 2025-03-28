@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+<div class="recipe-detail-header fade-in">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <span class="badge bg-primary mb-2">{{ recipe.category.name }}</span>
+            <h1 class="mb-2">{{ recipe.title }}</h1>
+            <p class="text-muted">
+                <i class="fas fa-user me-1"></i> By {{ recipe.author.username }} |
+                <i class="far fa-calendar-alt me-1"></i> {{ recipe.created_at|date:"F j, Y" }}
+                {% if recipe.updated_at != recipe.created_at %}
+                | <i class="fas fa-edit me-1"></i> Updated: {{ recipe.updated_at|date:"F j, Y" }}
+                {% endif %}
+            </p>
+        </div>
+        
+        {% if can_edit %}
+        <div class="recipe-actions">
+            <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-primary">
+                <i class="fas fa-edit me-1"></i> Edit
+            </a>
+            <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-danger">
+                <i class="fas fa-trash-alt me-1"></i> Delete
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="recipe-info mt-4">
+        <span class="badge bg-light text-dark p-2">
+            <i class="far fa-clock me-1"></i> Prep: {{ recipe.prep_time }} min
+        </span>
+        <span class="badge bg-light text-dark p-2">
+            <i class="fas fa-fire me-1"></i> Cook: {{ recipe.cook_time }} min
+        </span>
+        <span class="badge bg-light text-dark p-2">
+            <i class="fas fa-utensils me-1"></i> Servings: {{ recipe.servings }}
+        </span>
+        <span class="badge bg-light text-dark p-2">
+            <i class="fas fa-clock me-1"></i> Total: {{ recipe.prep_time|add:recipe.cook_time }} min
+        </span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4 fade-in" style="animation-delay: 100ms">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Description</h4>
+            </div>
+            <div class="card-body">
+                <p>{{ recipe.description }}</p>
+            </div>
+        </div>
+        
+        <div class="card mb-4 fade-in" style="animation-delay: 200ms">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-list me-2"></i>Ingredients</h4>
+            </div>
+            <div class="card-body">
+                <pre class="recipe-ingredients mb-0">{{ recipe.ingredients }}</pre>
+            </div>
+        </div>
+        
+        <div class="card mb-4 fade-in" style="animation-delay: 300ms">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-tasks me-2"></i>Instructions</h4>
+            </div>
+            <div class="card-body">
+                <pre class="recipe-instructions mb-0">{{ recipe.instructions }}</pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mb-4 fade-in" style="animation-delay: 400ms">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-share-alt me-2"></i>Share This Recipe</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-around">
+                    <a href="#" class="btn btn-outline-primary rounded-circle p-2" title="Share on Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="btn btn-outline-info rounded-circle p-2" title="Share on Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="btn btn-outline-success rounded-circle p-2" title="Share on WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="#" class="btn btn-outline-danger rounded-circle p-2" title="Share on Pinterest">
+                        <i class="fab fa-pinterest-p"></i>
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary rounded-circle p-2" title="Email this Recipe">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card fade-in" style="animation-delay: 500ms">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-user-circle me-2"></i>About the Author</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-light rounded-circle p-3 me-3">
+                        <i class="fas fa-user fa-2x text-primary"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0">{{ recipe.author.username }}</h5>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-map-marker-alt me-1"></i>
+                            {{ recipe.author.profile.location|default:"Location not specified" }}
+                        </p>
+                    </div>
+                </div>
+                <p>{{ recipe.author.profile.bio|default:"No bio provided." }}</p>
+                <a href="{% url 'recipe_list' %}?author={{ recipe.author.id }}" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-book-open me-1"></i> View All Recipes by {{ recipe.author.username }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'recipe_list' %}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Recipes
+    </a>
+</div>
+{% endblock %}

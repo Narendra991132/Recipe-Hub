@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="card fade-in">
+            <div class="card-header bg-white text-center py-3">
+                <h2 class="mb-0"><i class="fas fa-sign-in-alt me-2"></i>Log In</h2>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user me-1"></i> Username
+                        </label>
+                        <input type="text" name="username" id="username" class="form-control" required autofocus>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-1"></i> Password
+                        </label>
+                        <input type="password" name="password" id="password" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-2">
+                        <i class="fas fa-sign-in-alt me-1"></i> Log In
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <p class="mb-0">Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none">Register here</a></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4 fade-in" style="animation-delay: 200ms">
+            <div class="card-body">
+                <h5 class="card-title">Demo Accounts</h5>
+                <p>For demonstration purposes, you can use:</p>
+                <ul class="mb-0">
+                    <li><strong>Username:</strong> demo <br><strong>Password:</strong> demo1234</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-focus the username field
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('username').focus();
+    });
+</script>
+{% endblock %}

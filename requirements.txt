@@ -1,0 +1,7 @@
+Django
+boto3
+pylint
+pytest
+pytest-django
+python-dotenv
+gunicorn

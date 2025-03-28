@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}All Recipes{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold"><i class="fas fa-book-open me-2"></i>All Recipes</h1>
+    <a href="{% url 'recipe_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Add New Recipe
+    </a>
+</div>
+
+<div class="card mb-4 fade-in">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filter by Category</h5>
+    </div>
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'recipe_list' %}" class="category-pill {% if not selected_category %}bg-primary text-white{% endif %}">
+                All
+            </a>
+            {% for category in categories %}
+                <a href="{% url 'recipe_list' %}?category={{ category.id }}" 
+                   class="category-pill {% if selected_category == category.id %}bg-primary text-white{% endif %}">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% if recipes %}
+    <div class="row">
+        {% for recipe in recipes %}
+            <div class="col-md-4 mb-4 fade-in" style="animation-delay: {{ forloop.counter0 }}00ms">
+                <div class="card recipe-card h-100">
+                    <div class="card-body">
+                        <span class="badge bg-primary mb-2">{{ recipe.category.name }}</span>
+                        <h5 class="card-title">{{ recipe.title }}</h5>
+                        <p class="card-text text-truncate-2">{{ recipe.description|truncatechars:120 }}</p>
+                        <div class="recipe-meta">
+                            <span class="text-muted">
+                                <i class="far fa-clock me-1"></i> Prep: {{ recipe.prep_time }} min
+                            </span>
+                            <span class="text-muted">
+                                <i class="fas fa-fire me-1"></i> Cook: {{ recipe.cook_time }} min
+                            </span>
+                        </div>
+                        <div class="text-muted small">
+                            <i class="fas fa-user me-1"></i> By {{ recipe.author.username }}
+                            <span class="ms-2">
+                                <i class="far fa-calendar-alt me-1"></i> {{ recipe.created_at|date:"M d, Y" }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group w-100">
+                            <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-primary">
+                                <i class="fas fa-eye me-1"></i> View
+                            </a>
+                            {% if user.is_authenticated and user == recipe.author or user.is_staff %}
+                            <a href="{% url 'recipe_update' recipe.pk %}" class="btn btn-outline-primary">
+                                <i class="fas fa-edit me-1"></i> Edit
+                            </a>
+                            <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger">
+                                <i class="fas fa-trash-alt me-1"></i> Delete
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info fade-in">
+        <i class="fas fa-info-circle me-2"></i> No recipes found. 
+        {% if selected_category %}Try another category or {% endif %}
+        <a href="{% url 'recipe_create' %}" class="alert-link">add a new recipe</a>.
+    </div>
+{% endif %}
+{% endblock %}
