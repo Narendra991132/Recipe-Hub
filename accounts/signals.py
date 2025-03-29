@@ -4,14 +4,17 @@ from django.dispatch import receiver
 from .models import Profile
 
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_or_update_user_profile(sender, instance, created, **kwargs):
     """
-    Create a Profile whenever a new User is created
+    Create or update a User profile
     """
-    if created:
-        # Check if profile already exists to avoid duplicate errors
-        if not hasattr(instance, 'profile'):
-            Profile.objects.create(user=instance)
+    # Try to get profile and create if it doesn't exist
+    try:
+        # If profile exists, just save it
+        instance.profile.save()
+    except Profile.DoesNotExist:
+        # If profile doesn't exist, create it
+        Profile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
